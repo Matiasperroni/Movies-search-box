@@ -1,6 +1,6 @@
 
 import './App.css'
-import MovieSearchBox from './components/movie-search-box';
+import MovieSearchBox from './components/MovieSearchBox';
 
 function App() {
 

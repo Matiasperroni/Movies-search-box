@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import styles from "./movie-search-box.module.css";
+import styles from "./movieSearchBox.module.css";
 import notAvailableImg from "../../assets/img/image_not_available.png";
 
 const MovieSearch = () => {
