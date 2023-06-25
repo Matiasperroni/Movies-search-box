@@ -1,6 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@500&family=Montserrat:wght@100&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat+Alternates:wght@500&family=Montserrat:wght@100&display=swap");
 
-:root{
+:root {
     --md-dark-color: #1d1d1d;
     --dark-color: #171717;
     --ligth-dark-color: #292929;
@@ -8,9 +8,9 @@
 }
 
 body {
-    font-family: 'Montserrat Alternates', sans-serif;
+    font-family: "Montserrat Alternates", sans-serif;
 }
-a{
+a {
     text-decoration: none;
 }
 img {
@@ -20,7 +20,6 @@ img {
 .wrapper {
     min-height: 100vh;
     background-color: var(--md-dark-color);
-
 }
 .wrapper .container {
     max-width: 1200px;
@@ -35,7 +34,7 @@ img {
     justify-content: center;
     padding-top: 2rem;
 }
-.logo{
+.logo {
     padding: 1rem 0;
     border-bottom: 1px solid var(--ligth-dark-color);
 }
@@ -44,14 +43,15 @@ img {
     color: #fff;
     font-weight: bold;
 }
-.searchElement{
+.searchElement {
     display: flex;
     align-items: stretch;
     justify-content: center;
     flex-direction: column;
     position: relative;
 }
-.searchElement h3, h4 {
+.searchElement h3,
+h4 {
     align-self: center;
     margin-right: 1rem;
     font-size: 2rem;
@@ -69,7 +69,7 @@ img {
     color: var(--ligth-dark-color);
     width: 350px;
 }
-.searchList{
+.searchList {
     position: absolute;
     right: 0;
     top: 100%;
@@ -89,9 +89,8 @@ img {
 }
 .searchList .searchListItem:hover {
     background-color: #1f1f1f;
-
 }
-.searchListItem{
+.searchListItem {
     display: flex;
     align-items: center;
 }
@@ -193,7 +192,7 @@ img {
     font-weight: 300;
     font-size: 0.9rem;
 }
-.movieInfo .awards .icon {
+.movieInfo .awards i {
     color: var(--yellow-color);
     margin: 1rem 0.7rem 0 0;
 }
@@ -207,7 +206,8 @@ img {
         margin: 0 auto;
         padding: 0.5rem 1rem;
     }
-    .searchElement h3, h4 {
+    .searchElement h3,
+    h4 {
         font-size: 1.4rem;
     }
     .searchList {
@@ -218,16 +218,16 @@ img {
     .searchList .searchListItem {
         width: 100%;
     }
-    .movieMiscInfo li:nth-child(2){
+    .movieMiscInfo li:nth-child(2) {
         margin: 0.8rem 0;
     }
-
 }
-@media(min-width: 800px) {
-    .searchElement{
+@media (min-width: 800px) {
+    .searchElement {
         flex-direction: row;
     }
-    .searchElement h3, h4 {
+    .searchElement h3,
+    h4 {
         margin-bottom: 0;
     }
     .resultGrid {

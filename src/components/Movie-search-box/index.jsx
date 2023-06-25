@@ -1,15 +1,14 @@
 import React, { useRef } from "react";
 import styles from "./movie-search-box.module.css";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faAward } from "@fortawesome/free-solid-svg-icons";
+import notAvailableImg from "../../assets/img/image_not_available.png";
 
 const MovieSearch = () => {
     // https://www.omdbapi.com/?s=thor&page1&apikey=a68d41f3
     // https://www.omdbapi.com/?i=tt3896198&apikey=a68d41f3
     // get movies from API
-    const movieSearchBox = useRef(null)
-    const searchList = useRef(null)
-    const resultGrid = useRef(null)
+    const movieSearchBox = useRef(null);
+    const searchList = useRef(null);
+    const resultGrid = useRef(null);
     const loadMovies = async (searchTerm) => {
         const URL = `https://www.omdbapi.com/?s=${searchTerm}&page1&apikey=a68d41f3`;
         const res = await fetch(URL);
@@ -17,29 +16,107 @@ const MovieSearch = () => {
         if (data.Response) displayMovieList(data.Search);
     };
     const findMovies = () => {
-        let searchTerm = (movieSearchBox.current.value).trim();
-        if(searchTerm.length > 0) {
-            searchList.current.classList.remove("hideSearchList")
-            // console.log(searchList.current.classList);
-            loadMovies(searchTerm)
+        let searchTerm = movieSearchBox.current.value.trim();
+        if (searchTerm.length > 0) {
+            searchList.current.classList.remove(`${styles.hideSearchList}`);
+            loadMovies(searchTerm);
         } else {
-            searchList.current.classList.add("hideSearchList")
-        }
-        console.log(searchTerm);
-    }
-    const displayMovieList = (movies) => {
-        searchList.current.innerHTML = "";
-        for(let i = 0; i < movies.length; i++ ) {
-            let movieListItem = document.createElement("div");
-            movieListItem.dataset.id = movies[i].imdbID;
-            movieListItem.classList.add("searchListItem")
-            console.log(movieListItem);
+            searchList.current.classList.add(`${styles.hideSearchList}`);
         }
     };
-    
+    const displayMovieList = (movies) => {
+        searchList.current.innerHTML = "";
+        for (let i = 0; i < movies.length; i++) {
+            let movieListItem = document.createElement("div");
+            let moviePoster;
+            movieListItem.dataset.id = movies[i].imdbID;
+            movieListItem.classList.add(`${styles.searchListItem}`);
+            if (movies[i].Poster != "N/A") {
+                moviePoster = movies[i].Poster;
+            } else {
+                moviePoster = notAvailableImg;
+            }
+
+            movieListItem.innerHTML = `
+            <div class="${styles.searchItemThumbnail}">
+                <img
+                src="${moviePoster}"/>
+            </div>
+            <div class="${styles.searchItemsInfo}">
+                <h5>${movies[i].Title}</h5>
+                <p>${movies[i].Year}</p>
+            </div>
+            `;
+
+            searchList.current.appendChild(movieListItem)
+        }
+        loadMovieDetails();
+    };
+    const loadMovieDetails = () => {
+        const searchListMovies = document.querySelectorAll(`.${styles.searchListItem}`);
+        searchListMovies.forEach(movie => {
+            movie.addEventListener("click", async ()=> {
+                searchList.current.classList.add(`${styles.hideSearchList}`)
+                movieSearchBox.current.value = "";
+                const result = await fetch(`https://www.omdbapi.com/?i=${movie.dataset.id}&apikey=a68d41f3`);
+                const movieDetails = await result.json();
+                displayMovieDetails(movieDetails)
+            })
+        })
+    }
+    const displayMovieDetails = (details) => {
+        resultGrid.current.innerHTML = `
+        <div class="${styles.moviePoster}">
+        <img
+            src="${(details.Poster != "N/A") ? details.Poster : notAvailableImg}"
+            alt='image of the movie you searched for'
+        />
+    </div>
+    <div class="${styles.movieInfo}">
+        <h3 class="${styles.movieTitle}">
+            ${details.Title}
+        </h3>
+        <ul class="${styles.movieMiscInfo}">
+            <li class="${styles.year}">Year: ${details.Year}</li>
+            <li class="${styles.rated}">
+                Ratings: ${details.Rated}
+            </li>
+            <li class="${styles.released}">
+                Released: ${details.Released}
+            </li>
+        </ul>
+        <p class="${styles.genre}">
+            <b>Genre:</b> ${details.Genre}
+        </p>
+        <p class="${styles.writers}">
+            <b>Writers:</b> ${details.Writer}
+        </p>
+        <p class="${styles.actors}">
+            <b>Actors:</b> ${details.Actors}
+        </p>
+        <p class="${styles.plot}">
+            <b>Plot:</b> ${details.Plot}
+        </p>
+        <p class="${styles.language}">
+            <b>Lenguage:</b> ${details.Language}
+        </p>
+        <p class="${styles.awards}">
+            <b>
+                <i class= "fas fa-award"></i>
+            </b>
+            ${details.Awards}
+        </p>
+    </div>
+        `;
+    }
+    window.addEventListener("click", (e) => {
+        if(e.target.className != `${styles.formControl}`) {
+            searchList.current.classList.add(`${styles.hideSearchList}`);
+        }
+    })
+
     return (
         <>
-            {/* <FontAwesomeIcon icon={faBell}/> */}
             <div className={styles.wrapper}>
                 {/* LOGO */}
 
@@ -57,20 +134,10 @@ const MovieSearch = () => {
                             placeholder='Search Movie Title'
                             ref={movieSearchBox}
                             onKeyUp={findMovies}
+                            onClick={findMovies}
                         />
                         <div className={styles.searchList} ref={searchList}>
-                            <div className={styles.searchListItem}>
-                                <div className={styles.searchItemThumbnail}>
-                                    <img
-                                        src='https://assets-prd.ignimgs.com/2023/02/13/guardians-of-the-galaxy-vol-three-newbutton-1676306275720.jpg'
-                                        alt=''
-                                    />
-                                </div>
-                                <div className={styles.searchItemsInfo}>
-                                    <h5>Guardians Of The Galaxy</h5>
-                                    <p>2017</p>
-                                </div>
-                            </div>
+                            <div className={styles.searchListItem}></div>
                         </div>
                     </div>
                 </div>
@@ -80,54 +147,6 @@ const MovieSearch = () => {
                     <div className={styles.resultContainer}>
                         <div className={styles.resultGrid} ref={resultGrid}>
                             {/* MOVIE INFORMATION */}
-
-                            <div className={styles.moviePoster}>
-                                <img
-                                    src='https://assets-prd.ignimgs.com/2023/02/13/guardians-of-the-galaxy-vol-three-newbutton-1676306275720.jpg'
-                                    alt='image of the movie you searched for'
-                                />
-                            </div>
-                            <div className={styles.movieInfo}>
-                                <h3 className={styles.movieTitle}>
-                                    Guardians of The galaxy
-                                </h3>
-                                <ul className={styles.movieMiscInfo}>
-                                    <li className={styles.year}>Year: 2017</li>
-                                    <li className={styles.rated}>
-                                        Ratings: PG-13
-                                    </li>
-                                    <li className={styles.released}>
-                                        Released: 05 May 2017
-                                    </li>
-                                </ul>
-                                <p className={styles.genre}>
-                                    <b>Genre:</b> Action, Adventure, Comedy
-                                </p>
-                                <p className={styles.writers}>
-                                    <b>Writers:</b> James Gunn, Adventure,
-                                    Comedy
-                                </p>
-                                <p className={styles.actors}>
-                                    <b>Actors:</b> Chriss Patt, Adventure,
-                                    Comedy
-                                </p>
-                                <p className={styles.plot}>
-                                    <b>Plot:</b> The guardians of the galaxy
-                                    struggle to keep together as a team
-                                </p>
-                                <p className={styles.language}>
-                                    <b>Lenguage:</b> English
-                                </p>
-                                <p className={styles.awards}>
-                                    <b>
-                                        <FontAwesomeIcon
-                                            icon={faAward}
-                                            className={styles.icon}
-                                        />
-                                    </b>{" "}
-                                    Nominated for 1 Oscar
-                                </p>
-                            </div>
                         </div>
                     </div>
                 </div>
